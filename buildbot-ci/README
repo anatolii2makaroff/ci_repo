@@ -1,0 +1,19 @@
+#source buildbot/bin/activate
+# 
+#
+
+INSTALL
+ 1. buildbot (0.8.14)
+
+USAGE
+
+Create new Project example
+ 1. sh create_project.sh https://github.com/group/project.git group project 9989 7003
+
+ Config proxy
+ 2. /etc/nginx/conf.d/ci_ref add new proxy
+
+Restart all builders
+ sh restart.sh
+
+

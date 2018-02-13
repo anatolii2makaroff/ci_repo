@@ -1,0 +1,78 @@
+#!/bin/sh
+
+export GIT_SSL_NO_VERIFY=true
+REPO_URL=git@github.com
+
+echo "start building rpm.."
+echo "target url:"+$REPO_URL
+echo "repo "+$1+$2
+echo "branch "+$3
+
+# clone repo
+cd ~/$3/
+rm -rf $2
+git clone $REPO_URL:$1/$2.git
+cd $2
+git checkout $3
+
+# set version
+
+ver=$(git describe --tags $(git rev-list --tags --max-count=1))
+echo "Tag version "$ver
+if [ -z "$ver" ]
+      then
+        echo "No tag version"
+        ver=$4
+fi
+
+# move to dest
+
+rm -rf ~/$3/$2/.git
+cp -r ~/$3/$2 /opt/
+cd ~/$3/
+
+
+# execute build script if exists
+
+if [ -f "$2/install.sh" ]; then 
+    sh $2/install.sh
+    rm -rf $2/install.sh
+fi
+
+# build rpm
+
+if [ -d "$2/conf-scripts" ]; then
+  # Control will enter here if $DIRECTORY exists.
+
+   fpm -s dir -t rpm -n $2 -v $ver --prefix /opt/$2\
+    --before-install $2/conf-scripts/before-install\
+    --after-install $2/conf-scripts/after-install\
+    -C /opt/$2
+else
+   fpm -s dir -t rpm -n $2 -v $ver --prefix /opt/$2\
+    -C /opt/$2
+fi
+
+
+rm -rf $2
+
+# move to repo RPM (master/develop)
+
+if [ $3 = "master" ];
+then
+   mv *.rpm ../RPMS/
+   createrepo --update ../RPMS
+
+else
+   mv *.rpm ../RPMS-dev/
+   createrepo --update ../RPMS-dev
+
+fi
+
+# fix rigths
+
+chown -R rpmbuild:rpmbuild ../RPMS/repodata
+chown -R rpmbuild:rpmbuild ../RPMS-dev/repodata
+
+cd ~
+

@@ -1,0 +1,14 @@
+#!/bin/sh
+
+#
+# ./build_rpm $git_group $repo_name $git_branch $git_tag
+#
+
+sudo rm -rf $2
+pth=$(pwd)
+
+sudo docker run --rm --net=host\
+   -v $pth:/root/\
+   -v $pth/RPMS/:/root/RPMS/\
+   -v $pth/.ssh/root/.ssh/\
+   rpmbuild:latest  /root/start $1 $2 $3 $4
