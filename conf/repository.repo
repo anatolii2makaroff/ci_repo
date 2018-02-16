@@ -1,0 +1,8 @@
+[repository]
+name=My repo
+baseurl=http://host:8888/RPMS/
+gpgcheck=0
+enabled=1
+metadata_expire=1m
+http_caching=packages
+mirrorlist_expire=1m

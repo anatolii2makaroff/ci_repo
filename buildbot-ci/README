@@ -1,5 +1,6 @@
 #source buildbot/bin/activate
-# 
+# buildbot==0.8.14
+# buildbot-slave (0.8.14) 
 #
 
 INSTALL

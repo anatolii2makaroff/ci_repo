@@ -1,10 +1,10 @@
 #!/bin/sh
 
 export GIT_SSL_NO_VERIFY=true
-REPO_URL=git@github.com
+REPO_URL=git@gitlab.com
 
 echo "start building rpm.."
-echo "target url:"+$REPO_URL
+echo "target url "+$REPO_URL
 echo "repo "+$1+$2
 echo "branch "+$3
 
@@ -27,17 +27,19 @@ fi
 
 # move to dest
 
+cd ~/$3/$2
 rm -rf ~/$3/$2/.git
 cp -r ~/$3/$2 /opt/
-cd ~/$3/
 
 
 # execute build script if exists
 
-if [ -f "$2/install.sh" ]; then 
-    sh $2/install.sh
-    rm -rf $2/install.sh
+if [ -f "./install.sh" ]; then 
+    sh ./install.sh
+    rm -rf /opt/$2/install.sh
 fi
+
+cd ~/$3
 
 # build rpm
 
