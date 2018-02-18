@@ -1,6 +1,7 @@
 FROM centos:7
 MAINTAINER makarov version: 0.1
 
+RUN yum install -y epel-release
 RUN yum install -y ruby-devel gcc make rpm-build
 RUN yum install -y libffi-devel autoconf
 RUN gem install fpm ffi
