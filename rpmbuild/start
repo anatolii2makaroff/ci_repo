@@ -49,6 +49,7 @@ if [ -d "$2/conf-scripts" ]; then
    fpm -s dir -t rpm -n $2 -v $ver --prefix /opt/$2\
     --before-install $2/conf-scripts/before-install\
     --after-install $2/conf-scripts/after-install\
+    --before-remove $2/conf-scripts/before-install\
     -C /opt/$2
 else
    fpm -s dir -t rpm -n $2 -v $ver --prefix /opt/$2\
