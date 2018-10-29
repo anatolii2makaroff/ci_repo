@@ -7,8 +7,8 @@
 sudo rm -rf $2
 pth=$(pwd)
 
-sudo docker run --rm --net=host\
+sudo docker run --privileged --rm --net=host\
    -v $pth:/root/\
    -v $pth/RPMS/:/root/RPMS/\
    -v $pth/../.ssh:/root/.ssh/\
-   rpmbuild:latest  /root/start $1 $2 $3 $4
+   rpmbuild:latest /root/start $1 $2 $3 $4

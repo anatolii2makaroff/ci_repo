@@ -1,7 +1,9 @@
 #!/bin/sh
 
+set -e
+
 export GIT_SSL_NO_VERIFY=true
-REPO_URL=git@gitlab.com
+REPO_URL="https://github.com"
 
 echo "start building rpm.."
 echo "target url "+$REPO_URL
@@ -11,7 +13,7 @@ echo "branch "+$3
 # clone repo
 cd ~/$3/
 rm -rf $2
-git clone $REPO_URL:$1/$2.git
+git clone $REPO_URL/$1/$2.git
 cd $2
 git checkout $3
 
@@ -65,17 +67,13 @@ if [ $3 = "master" ];
 then
    mv *.rpm ../RPMS/
    createrepo --update ../RPMS
-
+    chown -R rpmbuild:rpmbuild ../RPMS/repodata
 else
    mv *.rpm ../RPMS-dev/
    createrepo --update ../RPMS-dev
-
+    chown -R rpmbuild:rpmbuild ../RPMS-dev/repodata
 fi
 
-# fix rigths
-
-chown -R rpmbuild:rpmbuild ../RPMS/repodata
-chown -R rpmbuild:rpmbuild ../RPMS-dev/repodata
 
 cd ~
 
