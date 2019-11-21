@@ -8,4 +8,5 @@ RUN gem install fpm ffi
 RUN apt install -y git
 RUN apt install -y python-dev python-pip
 RUN apt install -y libssl-dev
+RUN apt install -y curl
 RUN useradd rpmbuild
