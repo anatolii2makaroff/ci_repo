@@ -1,0 +1,11 @@
+FROM ubuntu:16.04
+MAINTAINER makarov version: 0.1
+
+RUN apt update
+RUN apt install -y  ruby ruby-dev rubygems build-essential
+RUN apt install -y libffi-dev autoconf
+RUN gem install fpm ffi
+RUN apt install -y git
+RUN apt install -y python-dev python-pip
+RUN apt install -y libssl-dev
+RUN useradd rpmbuild

@@ -1,0 +1,14 @@
+#!/bin/sh
+
+#
+# ./build_rpm $git_group $repo_name $git_branch $git_tag
+#
+
+sudo rm -rf $2
+pth=$(pwd)
+
+sudo docker run --privileged --rm --net=host\
+   -v $pth:/root/\
+   -v $pth/DEBS/:/root/DEBS/\
+   -v $pth/../.ssh:/root/.ssh/\
+   debbuild:latest /root/start_deb $1 $2 $3 $4

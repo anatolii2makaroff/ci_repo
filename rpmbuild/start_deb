@@ -1,0 +1,83 @@
+#!/bin/sh
+
+set -e
+
+export GIT_SSL_NO_VERIFY=true
+REPO_URL="https://github.com"
+
+echo "start building rpm.."
+echo "target url "+$REPO_URL
+echo "repo "+$1+$2
+echo "branch "+$3
+
+# clone repo
+cd ~/$3/
+rm -rf $2
+git clone $REPO_URL/$1/$2.git
+cd $2
+git checkout $3
+
+# set version
+
+ver=$(git describe --tags $(git rev-list --tags --max-count=1))
+echo "Tag version "$ver
+if [ -z "$ver" ]
+      then
+        echo "No tag version"
+        ver=$4
+fi
+
+# move to dest
+
+cd ~/$3/$2
+rm -rf ~/$3/$2/.git
+cp -r ~/$3/$2 /opt/
+
+
+# execute build script if exists
+
+if [ -f "./install.sh" ]; then 
+
+    sed -i 's/yum/apt/g' ./install.sh
+    sed -i 's/ncurses-devel/ncurses-dev/g' ./install.sh
+
+    sh ./install.sh
+    rm -rf /opt/$2/install.sh
+fi
+
+cd ~/$3
+
+# build rpm
+
+if [ -d "$2/conf-scripts" ]; then
+  # Control will enter here if $DIRECTORY exists.
+
+   fpm -s dir -t deb -n $2 -v $ver --prefix /opt/$2\
+    --before-install $2/conf-scripts/before-install\
+    --after-install $2/conf-scripts/after-install\
+    --before-remove $2/conf-scripts/before-install\
+    -C /opt/$2
+else
+   fpm -s dir -t deb -n $2 -v $ver --prefix /opt/$2\
+    -C /opt/$2
+fi
+
+
+rm -rf $2
+
+# move to repo RPM (master/develop)
+
+if [ $3 = "master" ];
+then
+   mv *.deb ../DEBS/
+   # createrepo --update ../RPMS
+   # chown -R rpmbuild:rpmbuild ../DEBS/*
+else
+   mv *.deb ../DEBS-dev/
+   # createrepo --update ../RPMS-dev
+   #  chown -R rpmbuild:rpmbuild ../RPMS-dev/repodata
+fi
+
+
+cd ~
+
