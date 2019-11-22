@@ -44,7 +44,8 @@ if [ -f "./install.sh" ]; then
     sed -i '/erlang-20.0.0-1.x86_64.rpm/c\curl -O https://dropfaas.com/DEBS/erlang_20.0.0_amd64.deb && dpkg -i erlang_20.0.0_amd64.deb' ./install.sh
  
 
-    sh ./install.sh
+    /bin/bash ./install.sh
+
     rm -rf /opt/$2/install.sh
 fi
 
