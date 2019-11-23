@@ -34,6 +34,20 @@ rm -rf ~/$3/$2/.git
 cp -r ~/$3/$2 /opt/
 
 
+# fix for deb 
+
+if [ "$2" = "drop-gateway-api" ]
+then
+    sed -i "s/rpm -qa/dpkg -l |awk '{print \$2\$3}'/g" /opt/$2/app/plugin.py
+    sed -i "s/rpm -qa/dpkg -l |awk '{print \$2\$3}'/g" /opt/$2/app/cluster.py
+    sed -i "s/rpm/deb/g" /opt/$2/app/cluster.py
+    sed -i "s/yum erase -y/dpkg -r/g" /opt/$2/app/plugin.py
+    sed -i "s/yum install -y {}/echo {}/g" /opt/$2/app/plugin.py
+    sed -i "s/yum search --disablerepo '\*' --enablerepo='/echo Not support '/g" /opt/$2/app/plugin.py
+
+fi;
+
+
 # execute build script if exists
 
 if [ -f "./install.sh" ]; then 
